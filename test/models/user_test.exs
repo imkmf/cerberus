@@ -2,6 +2,7 @@ defmodule Cerberus.UserTest do
   use Cerberus.ModelCase
 
   alias Cerberus.User
+  alias Comeonin.Bcrypt
 
   @valid_attrs %{email: "foo@bar.com", password: "foobar"}
   @invalid_attrs %{}
@@ -36,9 +37,21 @@ defmodule Cerberus.UserTest do
     assert @invalid_email_error == error_changeset.errors
   end
 
-  test "does not accept encrypted password" do
-    attrs = Dict.merge(@valid_attrs, %{encrypted_password: "test"})
-    changeset = User.changeset(%User{}, attrs)
-    assert Dict.get(changeset.changes, :encrypted_password) == :nil
+  test "does not store a password" do
+    changeset = User.changeset(%User{}, @valid_attrs)
+    assert Dict.get(changeset.changes, :password) == :nil
+  end
+
+  test "should passthrough when the changeset is uneventful" do
+    changeset = User.changeset(%User{}, @valid_attrs)
+    assert changeset.valid?
+  end
+
+  test "should accept a password and encrypt it" do
+    changeset = User.changeset(%User{}, @valid_attrs)
+    encrypted_pw = Dict.get(changeset.changes, :encrypted_password)
+    compare_pw = Bcrypt.checkpw("foobar", encrypted_pw)
+
+    assert compare_pw
   end
 end
