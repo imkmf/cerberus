@@ -12,6 +12,14 @@ defmodule Cerberus.User do
     timestamps()
   end
 
+  def compare_password(nil, _) do
+    Bcrypt.dummy_checkpw
+  end
+
+  def compare_password(user, pw_to_compare) do
+    Bcrypt.checkpw(pw_to_compare, user.encrypted_password)
+  end
+
   defp encrypt_password(changeset) do
     case get_field(changeset, :password) do
       nil ->

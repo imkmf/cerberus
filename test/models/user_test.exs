@@ -1,5 +1,5 @@
 defmodule Cerberus.UserTest do
-  use Cerberus.ModelCase
+  use Cerberus.ModelCase, async: true
 
   alias Cerberus.User
   alias Comeonin.Bcrypt
@@ -53,5 +53,16 @@ defmodule Cerberus.UserTest do
     compare_pw = Bcrypt.checkpw("foobar", encrypted_pw)
 
     assert compare_pw
+  end
+
+  test "can compare a password with the stored hash" do
+    changeset = User.changeset(%User{}, @valid_attrs)
+    {:ok, user} = Repo.insert(changeset)
+
+    assert User.compare_password(user, "foobar")
+  end
+
+  test "can fake comparing when no user is passed" do
+    refute User.compare_password(nil, "foobar")
   end
 end
