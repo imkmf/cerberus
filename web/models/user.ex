@@ -5,6 +5,7 @@ defmodule Cerberus.User do
 
   schema "users" do
     field :email, :string
+    field :password, :string, virtual: true
     field :encrypted_password, :string
 
     timestamps()
@@ -15,8 +16,8 @@ defmodule Cerberus.User do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:email, :encrypted_password])
-    |> validate_required([:email, :encrypted_password])
+    |> cast(params, [:email, :password])
+    |> validate_required([:email, :password])
     |> validate_format(:email, ~r/@/)
     |> unique_constraint(:email)
   end

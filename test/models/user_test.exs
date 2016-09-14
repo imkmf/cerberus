@@ -3,7 +3,7 @@ defmodule Cerberus.UserTest do
 
   alias Cerberus.User
 
-  @valid_attrs %{email: "foo@bar.com", encrypted_password: "some content"}
+  @valid_attrs %{email: "foo@bar.com", password: "foobar"}
   @invalid_attrs %{}
 
   @duplicate_email_error [email: {"has already been taken", []}]
@@ -34,5 +34,11 @@ defmodule Cerberus.UserTest do
 
     {:error, error_changeset} = Repo.insert(changeset)
     assert @invalid_email_error == error_changeset.errors
+  end
+
+  test "does not accept encrypted password" do
+    attrs = Dict.merge(@valid_attrs, %{encrypted_password: "test"})
+    changeset = User.changeset(%User{}, attrs)
+    assert Dict.get(changeset.changes, :encrypted_password) == :nil
   end
 end
