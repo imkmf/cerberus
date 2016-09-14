@@ -3,7 +3,7 @@ defmodule Cerberus.UserTest do
 
   alias Cerberus.User
 
-  @valid_attrs %{email: "some content", encrypted_password: "some content"}
+  @valid_attrs %{email: "foo@bar.com", encrypted_password: "some content"}
   @invalid_attrs %{}
 
   test "changeset with valid attributes" do
@@ -14,5 +14,14 @@ defmodule Cerberus.UserTest do
   test "changeset with invalid attributes" do
     changeset = User.changeset(%User{}, @invalid_attrs)
     refute changeset.valid?
+  end
+
+  test "emails are unique" do
+    changeset = User.changeset(%User{}, @valid_attrs)
+    {:ok, user} = Repo.insert(changeset)
+
+    changeset_two = User.changeset(%User{}, @valid_attrs)
+    {:error, error_changeset} = Repo.insert(changeset_two)
+    assert false == error_changeset.valid?
   end
 end
