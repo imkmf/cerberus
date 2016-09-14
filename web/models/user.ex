@@ -17,6 +17,7 @@ defmodule Cerberus.User do
     struct
     |> cast(params, [:email, :encrypted_password])
     |> validate_required([:email, :encrypted_password])
+    |> validate_format(:email, ~r/@/)
     |> unique_constraint(:email)
   end
 end

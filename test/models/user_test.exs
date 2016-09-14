@@ -6,6 +6,9 @@ defmodule Cerberus.UserTest do
   @valid_attrs %{email: "foo@bar.com", encrypted_password: "some content"}
   @invalid_attrs %{}
 
+  @duplicate_email_error [email: {"has already been taken", []}]
+  @invalid_email_error [email: {"has invalid format", []}]
+
   test "changeset with valid attributes" do
     changeset = User.changeset(%User{}, @valid_attrs)
     assert changeset.valid?
@@ -18,10 +21,18 @@ defmodule Cerberus.UserTest do
 
   test "emails are unique" do
     changeset = User.changeset(%User{}, @valid_attrs)
-    {:ok, user} = Repo.insert(changeset)
+    {:ok, _} = Repo.insert(changeset)
 
     changeset_two = User.changeset(%User{}, @valid_attrs)
     {:error, error_changeset} = Repo.insert(changeset_two)
-    assert false == error_changeset.valid?
+    assert @duplicate_email_error == error_changeset.errors
+  end
+
+  test "email is validated" do
+    attrs = Dict.merge(@valid_attrs, %{email: "test"})
+    changeset = User.changeset(%User{}, attrs)
+
+    {:error, error_changeset} = Repo.insert(changeset)
+    assert @invalid_email_error == error_changeset.errors
   end
 end
