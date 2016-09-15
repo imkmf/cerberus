@@ -39,7 +39,7 @@ defmodule Cerberus.User do
   def changeset(struct, params \\ %{}) do
     struct
     |> cast(params, [:email, :password])
-    |> validate_required([:email, :password])
+    |> validate_required([:email])
     |> validate_format(:email, ~r/@/)
     |> unique_constraint(:email)
     |> encrypt_password()
