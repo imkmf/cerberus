@@ -26,4 +26,17 @@ defmodule Cerberus.UsersTest do
     {:ok, user} = Users.create(@valid_attrs)
     assert user.email == @valid_attrs.email
   end
+
+  test "can update a user" do
+    {:ok, user} = Users.create(@valid_attrs)
+    {:ok, updated} = Users.update(user.id, %{email: "newemail@yahoo.com"})
+
+    assert updated.email == "newemail@yahoo.com"
+  end
+
+  test "can fail updating a user" do
+    {:ok, user} = Users.create(@valid_attrs)
+    {:error, changeset} = Users.update(user.id, %{email: "huh"})
+    assert changeset.errors == [email: {"has invalid format", []}]
+  end
 end

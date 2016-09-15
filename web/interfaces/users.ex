@@ -13,4 +13,13 @@ defmodule Cerberus.Users do
     |> User.changeset(params)
     |> Repo.insert
   end
+
+  def update(id, params) do
+    case find(id) do
+      nil -> false
+      user ->
+        changeset = User.changeset(user, params)
+        Repo.update(changeset)
+    end
+  end
 end

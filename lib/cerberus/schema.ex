@@ -22,4 +22,14 @@ defmodule Cerberus.Schema do
       end
     end
   end
+
+  mutation do
+    @desc "Create a user"
+    field :user, type: :user do
+      arg :email, non_null(:string)
+      arg :password, non_null(:string)
+
+      resolve fn(params, _) -> Users.create(params) end
+    end
+  end
 end
