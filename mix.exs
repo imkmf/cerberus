@@ -38,7 +38,8 @@ defmodule Cerberus.Mixfile do
      {:cowboy, "~> 1.0"},
      {:comeonin, "~> 2.5"},
      {:absinthe_plug, "~> 1.1"},
-     {:poison, "~> 2.1.0"}]
+     {:poison, "~> 2.1.0"},
+     {:joken, "~> 1.3.0"}]
   end
 
   # Aliases are shortcuts or tasks specific to the current project.

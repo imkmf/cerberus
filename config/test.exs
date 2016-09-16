@@ -20,3 +20,6 @@ config :cerberus, Cerberus.Repo,
 
 config :comeonin, :bcrypt_log_rounds, 4
 config :comeonin, :pbkdf2_rounds, 1
+
+config :cerberus, :secret_key,
+  "Z6cKz1yAzvsuSVCAZFxE5Af30kEXMUVi79poixJA/LRQtPipt02tZsx1cVAh2qKF"

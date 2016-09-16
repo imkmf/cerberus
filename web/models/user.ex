@@ -1,5 +1,6 @@
 defmodule Cerberus.User do
   use Cerberus.Web, :model
+  alias Joken
   alias Comeonin.Bcrypt
 
   @primary_key {:id, :binary_id, autogenerate: true}
@@ -18,6 +19,34 @@ defmodule Cerberus.User do
 
   def compare_password(user, pw_to_compare) do
     Bcrypt.checkpw(pw_to_compare, user.encrypted_password)
+  end
+
+  def generate_token(user) do
+    secret = Application.get_env(:cerberus, :secret_key)
+    |> Joken.hs256
+
+    %{user_id: user.id}
+    |> Joken.token
+    |> Joken.with_validation("user_id", &(&1 == user.id))
+    |> Joken.with_signer(secret)
+    |> Joken.sign
+    |> Joken.get_compact
+  end
+
+  def verify_token(token, user) do
+    secret = Application.get_env(:cerberus, :secret_key)
+    |> Joken.hs256
+
+    verified = token
+    |> Joken.token
+    |> Joken.with_validation("user_id", &(&1 == user.id))
+    |> Joken.with_signer(secret)
+    |> Joken.verify
+
+    case verified.errors do
+      nil -> :ok
+      _ -> :error
+    end
   end
 
   defp encrypt_password(changeset) do

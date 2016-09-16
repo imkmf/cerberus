@@ -65,4 +65,12 @@ defmodule Cerberus.UserTest do
   test "can fake comparing when no user is passed" do
     refute User.compare_password(nil, "foobar")
   end
+
+  test "can generate a valid for a user" do
+    changeset = User.changeset(%User{}, @valid_attrs)
+    {:ok, user} = Repo.insert(changeset)
+
+    token = User.generate_token(user)
+    assert :ok == User.verify_token(user, token)
+  end
 end

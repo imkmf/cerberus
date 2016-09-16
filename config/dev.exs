@@ -29,3 +29,6 @@ config :cerberus, Cerberus.Repo,
   database: "cerberus_dev",
   hostname: "localhost",
   pool_size: 10
+
+config :cerberus, :secret_key,
+  "Z6cKz1yAzvsuSVCAZFxE5Af30kEXMUVi79poixJA/LRQtPipt02tZsx1cVAh2qKF"

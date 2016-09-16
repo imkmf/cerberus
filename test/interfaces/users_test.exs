@@ -39,4 +39,11 @@ defmodule Cerberus.UsersTest do
     {:error, changeset} = Users.update(user.id, %{email: "huh"})
     assert changeset.errors == [email: {"has invalid format", []}]
   end
+
+  test "can validate a user login" do
+    {:ok, user} = Users.create(@valid_attrs)
+    assert {status, _} = Users.login(user.email, "foobar")
+    assert status == :ok
+    assert :error == Users.login(user.email, "blah")
+  end
 end
